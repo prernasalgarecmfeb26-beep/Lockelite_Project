@@ -1,0 +1,114 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: lockelite-backend
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/lockelite_db1?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&characterEncoding=UTF-8
+    username: root
+    password: cdac
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+
+  sql:
+    init:
+      mode: always                          # always run schema.sql on startup
+      schema-locations: classpath:schema.sql
+      data-locations:                       # no data.sql — DataInitializer handles seeding
+
+  jpa:
+    hibernate:
+      ddl-auto: update                      # update keeps existing data, adds missing columns
+    defer-datasource-initialization: true   # ensure sql.init runs BEFORE Hibernate validates
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        use_sql_comments: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "prathampathari567@gmail.com"
+    password: "oywghunrgddwdrbk"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email,profile
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+  async:
+    executor:
+      core-pool-size: 5
+      max-pool-size: 10
+      queue-capacity: 100
+
+jwt:
+  secret: BNE2JPqCNLO28fQPFOu5wPMUi9mUFO4EtN5oPB23uCu
+  expiration-ms: 86400000
+  refresh-expiration-ms: 604800000
+
+setu:
+  base-url: https://dg-sandbox.setu.co
+  client-id: 258eeb68-4434-4258-9f09-a93c40fd4de9
+  client-secret: AFSuYqrCL0JaNL9rkBihVrSw7WNrTbSK
+  product-instance-id: fb1ec025-19b3-482d-a29e-f8430631f0ff
+
+file:
+  upload:
+    kyc-path: uploads/kyc
+    max-size: 5242880
+
+app:
+  frontend-url: http://localhost:5173
+  oauth2:
+    redirect-uri: http://localhost:5173/oauth2/callback
+  otp:
+    expiry-minutes: 10
+  penalty:
+    per-day: 50.00
+  branch-timing:
+    open-hour: 9
+    close-hour: 17
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+logging:
+  level:
+    com.lockelite: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+payment:
+  service-url: http://localhost:8081
